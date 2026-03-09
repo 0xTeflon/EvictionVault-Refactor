@@ -6,7 +6,7 @@ This project refactors the original **EvictionVault monolithic contract** into a
 
 The goal was to improve **security, readability, and maintainability** while keeping the implementation simple and testable within a short development window.
 
-The system is now structured into multiple contracts with clearly separated responsibilities.
+The system is now structured into multiple contracts with clearly separated responsibilities. In addition, **Merkle proof verification** was implemented to securely validate claims.
 
 ---
 
@@ -18,7 +18,7 @@ The original single-file contract was split into modular components:
 src/
  ├ VaultStorage.sol   // contract storage variables
  ├ VaultAdmin.sol     // admin and emergency controls
- ├ VaultClaim.sol     // user deposit and withdrawal logic
+ ├ VaultClaim.sol     // user deposit, withdrawal, and claim logic
  ├ EvictionVault.sol  // main vault contract
 ```
 
@@ -104,6 +104,26 @@ Refactor implemented:
 
 ---
 
+### 7. Merkle Proof Claim Verification
+
+Claim functionality was secured using **OpenZeppelin’s `MerkleProof` library**.
+
+Fix implemented:
+
+- Claims require a valid Merkle proof.
+- The contract verifies the user's `(address, amount)` against the stored `merkleRoot`.
+
+Example verification logic:
+
+```
+bytes32 leaf = keccak256(abi.encodePacked(msg.sender, amount));
+require(MerkleProof.verify(proof, merkleRoot, leaf), "invalid proof");
+```
+
+This ensures only addresses included in the Merkle tree can claim funds.
+
+---
+
 ## Current Contract State
 
 The refactored system now provides:
@@ -112,6 +132,7 @@ The refactored system now provides:
 - Emergency pause functionality
 - Safe ETH transfer mechanisms
 - Removal of unsafe authentication patterns
+- Merkle proof based claim validation
 - A modular and maintainable code structure
 
 The contract compiles successfully using:
@@ -126,6 +147,7 @@ Basic positive tests confirm that:
 - Withdrawals work as expected
 - Pause functionality blocks operations
 - Emergency withdrawal is restricted to the owner
+- Merkle-based claim logic works
 
 ---
 
@@ -146,5 +168,7 @@ All positive tests pass successfully.
 ## Conclusion
 
 The EvictionVault contract has been successfully refactored into a modular architecture with critical security vulnerabilities addressed.
+
+Merkle proof verification has also been integrated to ensure that claims are securely validated.
 
 The current implementation focuses on **simplicity, security, and maintainability**, making the contract safer for future development and auditing.
