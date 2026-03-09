@@ -34,7 +34,7 @@ contract EvictionVaultTest is Test {
     }
 
     // pause blocks actions
-        function testPause() public {
+    function testPause() public {
 
         vault.pause();
 
@@ -53,5 +53,19 @@ contract EvictionVaultTest is Test {
         assertEq(address(vault).balance, 0);
     }
 
-}
+    // Merkle-based claim logic works
+        function testClaim() public {
 
+        bytes32 leaf = keccak256(abi.encodePacked(address(this), uint256(1 ether)));
+
+        vault.setMerkleRoot(leaf);
+
+        bytes32[] memory proof = new bytes32[](0);
+
+        vault.deposit{value: 1 ether}();
+
+        vault.claim(1 ether, proof);
+
+    }
+
+}

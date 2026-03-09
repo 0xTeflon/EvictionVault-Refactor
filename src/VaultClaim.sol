@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import {VaultAdmin} from "./VaultAdmin.sol";
 
 contract VaultClaim is VaultAdmin {
@@ -19,11 +20,16 @@ contract VaultClaim is VaultAdmin {
         require(success, "transfer failed");
     }
 
-    function claim() external whenNotPaused {
+    function claim(uint256 amount, bytes32[] calldata proof) external whenNotPaused {
 
         require(!claimed[msg.sender], "already claimed");
 
-        uint256 amount = deposits[msg.sender];
+        bytes32 leaf = keccak256(abi.encodePacked(msg.sender, amount));
+
+        require(
+            MerkleProof.verify(proof, merkleRoot, leaf),
+            "invalid proof"
+        );
 
         claimed[msg.sender] = true;
 
