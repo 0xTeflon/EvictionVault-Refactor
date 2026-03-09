@@ -55,18 +55,3 @@ contract EvictionVaultTest is Test {
 
 }
 
-// deposit works
-// withdraw works
-// pause blocks actions
-// emergency withdraw works
-
-// using the guidelines below, write a README.md file detailing the implemented fixes and the current state of the contract.
-
-// Security Fixes Implemented
-
-// 1. setMerkleRoot restricted to owner
-// 2. emergencyWithdrawAll restricted to owner
-// 3. pause/unpause implemented
-// 4. removed tx.origin usage
-// 5. replaced transfer with call
-// 6. contract modularized into multiple files
