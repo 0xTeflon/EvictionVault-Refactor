@@ -6,9 +6,7 @@ This project refactors the original **EvictionVault monolithic contract** into a
 
 The goal was to improve **security, readability, and maintainability** while keeping the implementation simple and testable within a short development window.
 
-The system is now structured into multiple contracts with clearly separated responsibilities. In addition, **Merkle proof verification** was implemented to securely validate claims.
-
----
+## The system is now structured into multiple contracts with clearly separated responsibilities.
 
 ## Project Structure
 
@@ -104,26 +102,6 @@ Refactor implemented:
 
 ---
 
-### 7. Merkle Proof Claim Verification
-
-Claim functionality was secured using **OpenZeppelin’s `MerkleProof` library**.
-
-Fix implemented:
-
-- Claims require a valid Merkle proof.
-- The contract verifies the user's `(address, amount)` against the stored `merkleRoot`.
-
-Example verification logic:
-
-```
-bytes32 leaf = keccak256(abi.encodePacked(msg.sender, amount));
-require(MerkleProof.verify(proof, merkleRoot, leaf), "invalid proof");
-```
-
-This ensures only addresses included in the Merkle tree can claim funds.
-
----
-
 ## Current Contract State
 
 The refactored system now provides:
@@ -132,7 +110,6 @@ The refactored system now provides:
 - Emergency pause functionality
 - Safe ETH transfer mechanisms
 - Removal of unsafe authentication patterns
-- Merkle proof based claim validation
 - A modular and maintainable code structure
 
 The contract compiles successfully using:
